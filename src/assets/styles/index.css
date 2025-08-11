@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom right, #f8fafc, #e0f2fe);
+  color: #1e293b;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  color: white;
+  padding: 1rem;
+}
+
+.navbar a {
+  color: white;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #fef9c3;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(90deg, #2563eb, #0ea5e9);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+}
+
+/* Chat container */
+.chat-container {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+/* Messages */
+.message-user {
+  background: #bfdbfe;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  max-width: 70%;
+  margin: 0.5rem 0;
+  align-self: flex-end;
+}
+
+.message-bot {
+  background: #f1f5f9;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  max-width: 70%;
+  margin: 0.5rem 0;
+  align-self: flex-start;
+}
+
+/* Input box */
+.input-box {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+  width: 100%;
+}
+
+.input-box:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('/src/assets/iiit-dharwad-bg.jpg'); /* Background image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  .bg-overlay {
+    background-color: rgba(255, 255, 255, 0.85); /* White transparent overlay */
+    backdrop-filter: blur(5px);
+  }
