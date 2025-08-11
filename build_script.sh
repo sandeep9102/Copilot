@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e  # Exit immediately if a command exits with a non-zero status
 
+# Step 0: Install system dependencies for pygame
+echo "🛠 Installing SDL2 dependencies..."
+apt-get update && apt-get install -y \
+    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+
 # Step 1: Build Frontend
 echo "📦 Installing frontend dependencies..."
 npm ci  # faster & reproducible installs, uses package-lock.json
