@@ -1,13 +1,12 @@
 #!/bin/bash
 # Install frontend dependencies and build
-cd frontend
 npm install
 npm run build
-cd ..
 
 # Move build to where Flask can serve it
-cp -r frontend/build backend/
+rm -rf rag-backend/build
+cp -r dist rag-backend/build
 
 # Install Python dependencies
-cd backend
+cd rag-backend
 pip install -r requirements.txt
