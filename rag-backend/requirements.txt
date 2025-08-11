@@ -14,7 +14,7 @@ chromadb==0.4.22
 # Embeddings & Transformers
 sentence-transformers==2.2.2
 transformers==4.39.3
-numpy==1.26.4
+numpy>=1.26.4,<2.0.0
 scikit-learn==1.4.2
 
 # OpenAI API
