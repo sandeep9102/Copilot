@@ -1,3 +1,4 @@
+# Flask server
 Flask==2.3.3
 Flask-CORS==4.0.0
 gunicorn==21.2.0
@@ -10,7 +11,6 @@ sentence-transformers==2.7.0
 
 # Core dependencies
 numpy>=1.26.4,<2.0.0
-pandas==2.3.0rc0
-# Pre-release with Python 3.13 support (avoids source build)
+pandas>=2.0.0,<2.2.0   # Stable, works with Python 3.10+ on Render
 scikit-learn==1.5.1
 joblib==1.4.2
