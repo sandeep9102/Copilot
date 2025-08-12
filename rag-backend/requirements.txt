@@ -4,15 +4,20 @@ Flask-CORS==4.0.0
 gunicorn==21.2.0
 pymongo
 
-
 # RAG dependencies
 langchain==0.2.11
+langchain-community
+langchain-google-genai
+google-generativeai
 openai==1.42.0
-chromadb==0.5.3
 sentence-transformers==2.7.0
 
 # Core dependencies
 numpy>=1.26.4,<2.0.0
-pandas>=2.2.3,<2.4.0   # Compatible with Python 3.13+
+pandas>=2.2.3,<2.4.0
 scikit-learn==1.5.1
 joblib==1.4.2
+
+# Additional required libs
+faiss-cpu
+python-dotenv
