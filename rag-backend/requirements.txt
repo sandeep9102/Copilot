@@ -11,6 +11,6 @@ sentence-transformers==2.7.0
 
 # Core dependencies
 numpy>=1.26.4,<2.0.0
-pandas>=2.0.0,<2.2.0   # Stable, works with Python 3.10+ on Render
+pandas>=2.2.3,<2.4.0   # Compatible with Python 3.13+
 scikit-learn==1.5.1
 joblib==1.4.2
