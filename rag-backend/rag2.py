@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 import faiss
@@ -28,7 +29,7 @@ client = MongoClient(MONGO_URI)
 db = client["chatbot"]
 chat_sessions = db["chat_sessions"]
 
-# Initialize Flask app with proper static and template folders
+# Initialize Flask app
 app = Flask(__name__, 
             static_folder='src',
             static_url_path='',
@@ -87,7 +88,6 @@ def initialize_faiss():
     faiss_index.add(embeddings_np)
     print("FAISS index initialized successfully!")
 
-# Initialize FAISS on startup
 initialize_faiss()
 
 def retrieve_relevant_documents(query_embedding, n_results=3):
@@ -117,7 +117,7 @@ def generate_response(query, context, chat_history):
     Conversation So Far:
     {history_text}
 
-    User's Question:
+    User’s Question:
     {query}
 
     Your Reply:
@@ -161,8 +161,7 @@ def rag_with_chat_history(query, session_id):
         print(f"Error in RAG pipeline: {e}")
         return "Error processing query.", []
 
-# =================== ROUTES ===================
-
+# Added part 
 @app.route("/")
 def home():
     """Serve the main chatbot interface."""
@@ -170,104 +169,24 @@ def home():
         return render_template("index.html")
     except Exception as e:
         print(f"Error serving index.html: {e}")
-        # Fallback HTML if index.html is not found
-        return f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>IIIT Dharwad RAG Chatbot</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }}
-                .container {{ max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
-                h1 {{ color: #333; text-align: center; }}
-                .status {{ background: #e7f5e7; border: 1px solid #4CAF50; padding: 15px; border-radius: 5px; margin: 20px 0; }}
-                .endpoints {{ background: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0; }}
-                .endpoint {{ margin: 10px 0; padding: 10px; background: white; border-left: 4px solid #2196F3; }}
-                code {{ background: #f5f5f5; padding: 2px 5px; border-radius: 3px; }}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🎓 IIIT Dharwad RAG Chatbot</h1>
-                
-                <div class="status">
-                    <h3>✅ Backend Status: Running Successfully!</h3>
-                    <p>FAISS Index: {"✅ Initialized" if faiss_index is not None else "❌ Not Initialized"}</p>
-                    <p>MongoDB: {"✅ Connected" if client else "❌ Not Connected"}</p>
-                    <p>Google AI: {"✅ Configured" if GOOGLE_API_KEY else "❌ Not Configured"}</p>
-                </div>
-                
-                <div class="endpoints">
-                    <h3>📡 Available API Endpoints:</h3>
-                    
-                    <div class="endpoint">
-                        <strong>POST /chat/start</strong><br>
-                        <small>Start a new chat session</small><br>
-                        <code>Response: {{"session_id": "uuid"}}</code>
-                    </div>
-                    
-                    <div class="endpoint">
-                        <strong>POST /chat</strong><br>
-                        <small>Send a message to the chatbot</small><br>
-                        <code>Body: {{"query": "your question", "session_id": "uuid"}}</code>
-                    </div>
-                    
-                    <div class="endpoint">
-                        <strong>GET /chat/history/&lt;session_id&gt;</strong><br>
-                        <small>Get chat history for a session</small><br>
-                        <code>Response: {{"session_id": "uuid", "chat_history": [...]}}</code>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 30px; color: #666;">
-                    <p>Frontend interface should be available at the root URL once properly configured.</p>
-                    <p><small>Error: {e}</small></p>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
+        return f"<h1>IIIT Dharwad RAG Chatbot</h1><p>Backend is running! Error: {e}</p>", 500
 
 @app.route("/health")
 def health_check():
-    """Health check endpoint."""
     return jsonify({
         "status": "healthy",
-        "faiss_initialized": faiss_index is not None,
-        "mongodb_connected": client is not None,
-        "google_api_configured": GOOGLE_API_KEY is not None,
-        "text_chunks_loaded": len(text_chunks)
+        "faiss_initialized": faiss_index is not None
     })
 
-# Static file routes for better compatibility
+# Static file routes
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
-    """Serve static assets (CSS, JS, images)."""
-    try:
-        return send_from_directory('src/assets', filename)
-    except Exception as e:
-        print(f"Error serving asset {filename}: {e}")
-        return "Asset not found", 404
+    return send_from_directory('src/assets', filename)
 
 @app.route('/components/<path:filename>')
 def serve_components(filename):
-    """Serve component files."""
-    try:
-        return send_from_directory('src/components', filename)
-    except Exception as e:
-        print(f"Error serving component {filename}: {e}")
-        return "Component not found", 404
+    return send_from_directory('src/components', filename)
 
-@app.route('/styles/<path:filename>')
-def serve_styles(filename):
-    """Serve CSS files."""
-    try:
-        return send_from_directory('src/assets/styles', filename)
-    except Exception as e:
-        print(f"Error serving style {filename}: {e}")
-        return "Style not found", 404
-
-# CORS headers
 @app.after_request
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
@@ -275,11 +194,8 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
-# =================== API ENDPOINTS ===================
-
 @app.route("/chat/start", methods=["POST"])
 def start_chat():
-    """Start a new chat session."""
     try:
         session_id = str(uuid.uuid4())
         chat_sessions.insert_one({"session_id": session_id, "chat_history": []})
@@ -290,7 +206,6 @@ def start_chat():
 
 @app.route("/chat/history/<session_id>", methods=["GET"])
 def get_chat_history(session_id):
-    """Get chat history for a specific session."""
     try:
         session = chat_sessions.find_one({"session_id": session_id})
         if session:
@@ -302,56 +217,20 @@ def get_chat_history(session_id):
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    """Main chat endpoint - handles user queries."""
     try:
         data = request.json
-        if not data:
-            return jsonify({"error": "No JSON data provided"}), 400
-            
         query = data.get("query", "").strip()
         session_id = data.get("session_id", "").strip()
 
-        if not query:
-            return jsonify({"error": "Query is required"}), 400
-        if not session_id:
-            return jsonify({"error": "Session ID is required"}), 400
+        if not query or not session_id:
+            return jsonify({"error": "Query and session_id are required"}), 400
 
         response, updated_history = rag_with_chat_history(query, session_id)
-        return jsonify({
-            "response": response, 
-            "chat_history": updated_history,
-            "session_id": session_id
-        })
+        return jsonify({"response": response, "chat_history": updated_history})
     except Exception as e:
         print(f"Error processing chat request: {e}")
         return jsonify({"error": "Internal server error"}), 500
 
-# Handle preflight requests
-@app.route("/chat", methods=["OPTIONS"])
-@app.route("/chat/start", methods=["OPTIONS"])
-def handle_preflight():
-    """Handle CORS preflight requests."""
-    return "", 200
-
-# Error handlers
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({"error": "Endpoint not found"}), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    return jsonify({"error": "Internal server error"}), 500
-
-# =================== MAIN ===================
-
 if __name__ == "__main__":
-    # Production-ready configuration
     port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_ENV') == 'development'
-    
-    print(f"🚀 Starting IIIT Dharwad RAG Chatbot on port {port}")
-    print(f"📁 Static folder: {app.static_folder}")
-    print(f"📄 Template folder: {app.template_folder}")
-    print(f"🤖 FAISS Index: {'✅ Ready' if faiss_index is not None else '❌ Not initialized'}")
-    
-    app.run(host="0.0.0.0", port=port, debug=debug)
+    app.run(host="0.0.0.0", port=port, debug=False)
