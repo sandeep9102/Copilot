@@ -6,10 +6,10 @@ pymongo==4.8.0
 pypdf==4.3.1
 
 # RAG dependencies
-langchain==0.2.11
-langchain-community==0.2.11
-langchain-google-genai==1.0.8
-google-generativeai==0.7.2
+langchain
+langchain-community
+langchain-google-genai
+google-generativeai
 sentence-transformers==2.7.0
 
 # Core dependencies
@@ -19,5 +19,5 @@ scikit-learn==1.5.1
 joblib==1.4.2
 
 # Additional required libs
-faiss-cpu==1.8.0
-python-dotenv==1.0.1
+faiss-cpu
+python-dotenv
